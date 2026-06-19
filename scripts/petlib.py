@@ -129,3 +129,27 @@ def validate_folder(folder: Path) -> dict[str, Any]:
         "errors": errors,
         "warnings": warnings,
     }
+
+
+def set_selected_avatar(pet_id: str) -> None:
+    path = config_path()
+    value = f'selected-avatar-id = "custom:{pet_id}"'
+    if path.exists():
+        lines = path.read_text(encoding="utf-8").splitlines()
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        lines = []
+
+    replaced = False
+    out: list[str] = []
+    for line in lines:
+        if line.strip().startswith("selected-avatar-id"):
+            out.append(value)
+            replaced = True
+        else:
+            out.append(line)
+    if not replaced:
+        if out and out[-1].strip():
+            out.append("")
+        out.append(value)
+    path.write_text("\n".join(out) + "\n", encoding="utf-8")

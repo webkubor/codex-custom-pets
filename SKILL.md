@@ -17,6 +17,7 @@ Use the bundled scripts first:
 python scripts/list_pets.py
 python scripts/validate_pet.py ~/.codex/pets/golden-kitten
 python scripts/select_pet.py golden-kitten
+python scripts/install_example_pet.py golden-kitten --select
 ```
 
 Do not print secrets or unrelated Codex config. Only touch `selected-avatar-id` in `${CODEX_HOME:-$HOME/.codex}/config.toml` when switching pets.
@@ -112,6 +113,16 @@ ${CODEX_HOME:-$HOME/.codex}/vendor_imports/skills/skills/.curated/hatch-pet/SKIL
 After `hatch-pet` produces a package, copy the final package under `~/.codex/pets/<pet-id>/`, validate it with `validate_pet.py`, then select it only if the user asked to make it active.
 
 If `hatch-pet` is not installed, keep this skill scoped to packaging and explain that full spritesheet generation requires the hatch-pet pipeline or equivalent image generation workflow.
+
+### Install The Built-In Kitten
+
+This skill ships with a working `golden-kitten` example under `assets/golden-kitten/`. Install it with:
+
+```bash
+python scripts/install_example_pet.py golden-kitten --select
+```
+
+If the user already has a local `golden-kitten`, do not overwrite it unless they ask. Use `--overwrite --select` only after confirming replacement is intended.
 
 ## Safety Rules
 
