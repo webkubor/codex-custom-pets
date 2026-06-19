@@ -1,100 +1,89 @@
 # Codex Custom Pets
 
-Codex skill for managing desktop custom pets under `~/.codex/pets`.
+给 Codex 装一只桌面小伙伴。
 
-Use it to:
+<p align="center">
+  <img src="./assets/golden-kitten/preview.png" width="192" alt="Golden Kitten Codex pet preview" />
+</p>
 
-- list installed custom pets
-- validate `pet.json` + `spritesheet`
-- switch the active Codex desktop pet
-- install the bundled `golden-kitten` example
-- hand off full pet generation to `hatch-pet` when available
+这是一个 Codex Skill，用来安装、校验、切换 Codex 桌面宠物。仓库里已经内置了一只可以直接用的小猫：**Golden Kitten**。
 
-## Install
+## 给人看的
+
+如果你想让 Codex 有一只可爱的桌面宠物，但不想自己生成 spritesheet、不想手动改配置，就用这个。
+
+你不需要自己敲命令。把下面这句话丢给 Codex，让 Agent 去安装和配置：
+
+```text
+使用 https://github.com/webkubor/codex-custom-pets 这个 Codex Skill，安装内置的 golden-kitten 示例宠物，并把它设为我的 Codex 桌面宠物。
+```
+
+## 给 Agent 看的
+
+你的任务不是解释工具，而是替用户装好并验证。
+
+推荐执行：
 
 ```bash
 mkdir -p ~/.codex/skills
 git clone https://github.com/webkubor/codex-custom-pets.git ~/.codex/skills/codex-custom-pets
+cd ~/.codex/skills/codex-custom-pets
+python3 scripts/install_example_pet.py golden-kitten --select
 ```
 
-If you already cloned it somewhere else, symlink it:
-
-```bash
-ln -s /path/to/codex-custom-pets ~/.codex/skills/codex-custom-pets
-```
-
-## Quick Use
+如果 skill 已经安装，更新而不是覆盖：
 
 ```bash
 cd ~/.codex/skills/codex-custom-pets
-
-# List local pets and show the active one
-python3 scripts/list_pets.py
-
-# Install the bundled kitten example
-python3 scripts/install_example_pet.py golden-kitten --select
-
-# Validate one pet package
-python3 scripts/validate_pet.py ~/.codex/pets/golden-kitten
-
-# Select a pet as the active Codex companion
-python3 scripts/select_pet.py golden-kitten
-```
-
-The active pet is stored in:
-
-```toml
-selected-avatar-id = "custom:<pet-id>"
-```
-
-inside `~/.codex/config.toml`.
-
-## Pet Package Shape
-
-```text
-~/.codex/pets/<pet-id>/
-├── pet.json
-└── spritesheet.webp   # preferred
-```
-
-Older local exports with `spritesheet.png` are supported.
-
-Required atlas size:
-
-```text
-1536x1872
-```
-
-## Bundled Example
-
-This repo includes:
-
-```text
-assets/golden-kitten/
-├── pet.json
-└── spritesheet.png
-```
-
-Install it:
-
-```bash
+git pull --ff-only
 python3 scripts/install_example_pet.py golden-kitten --select
 ```
 
-If `~/.codex/pets/golden-kitten` already exists, the script refuses to overwrite it. Use this only when you really want to replace it:
+如果本机已经有 `~/.codex/pets/golden-kitten`，不要擅自覆盖。只有用户明确要替换时才执行：
 
 ```bash
 python3 scripts/install_example_pet.py golden-kitten --overwrite --select
 ```
 
-## Use From Codex
+安装后必须验证：
 
-Ask:
-
-```text
-Use $codex-custom-pets to list my installed Codex pets.
-Use $codex-custom-pets to validate ~/.codex/pets/golden-kitten.
-Use $codex-custom-pets to switch my active pet to golden-kitten.
+```bash
+python3 scripts/list_pets.py
+python3 scripts/validate_pet.py ~/.codex/pets/golden-kitten
+rg -n 'selected-avatar-id' ~/.codex/config.toml
 ```
 
-For generating a brand-new animated pet, use `hatch-pet` if it is installed, then validate and select the output with this skill.
+预期配置：
+
+```toml
+selected-avatar-id = "custom:golden-kitten"
+```
+
+## 内置了什么
+
+```text
+assets/golden-kitten/
+├── preview.png
+├── pet.json
+└── spritesheet.png
+```
+
+`spritesheet.png` 尺寸是 `1536x1872`，符合 Codex 桌面宠物的 8 x 9 动画网格。
+
+## 常用命令
+
+```bash
+# 查看本机宠物
+python3 scripts/list_pets.py
+
+# 安装内置小猫并设为当前宠物
+python3 scripts/install_example_pet.py golden-kitten --select
+
+# 校验某只宠物
+python3 scripts/validate_pet.py ~/.codex/pets/golden-kitten
+
+# 切换当前宠物
+python3 scripts/select_pet.py golden-kitten
+```
+
+这个 skill 负责安装、校验、切换宠物。如果用户要生成一只全新的动画宠物，先用 `hatch-pet` 生成，再用这个 skill 做安装和选择。
