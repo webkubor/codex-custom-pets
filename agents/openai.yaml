@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Custom Pets"
+  short_description: "Manage Codex desktop pet packages."
+  default_prompt: "Use $codex-custom-pets to inspect, validate, or switch my Codex desktop pet."
